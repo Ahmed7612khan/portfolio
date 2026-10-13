@@ -1,0 +1,79 @@
+<!-- templates/core/projects.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-20 relative overflow-hidden">
+
+    <!-- Animated Background Blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <!-- Floating Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+
+    <!-- Page Content -->
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-12">
+            <h1 class="section-title">My Projects</h1>
+            <p class="section-subtitle">A showcase of my work and projects I've built.</p>
+        </div>
+        
+        <!-- Category Filter -->
+        <div class="flex flex-wrap justify-center gap-3 mb-10">
+            <a href="?category=" class="px-4 py-2 rounded-full transition {% if not request.GET.category %}text-white{% else %}border hover:bg-gray-100 dark:hover:bg-gray-800{% endif %}" style="{% if not request.GET.category %}background: var(--gradient);{% else %}border-color: var(--border-color); color: var(--text-primary);{% endif %}">
+                All
+            </a>
+            {% for category in categories %}
+            <a href="?category={{ category }}" class="px-4 py-2 rounded-full transition {% if request.GET.category == category %}text-white{% else %}border hover:bg-gray-100 dark:hover:bg-gray-800{% endif %}" style="{% if request.GET.category == category %}background: var(--gradient);{% else %}border-color: var(--border-color); color: var(--text-primary);{% endif %}">
+                {{ category }}
+            </a>
+            {% endfor %}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for project in projects %}
+            <div class="card rounded-2xl overflow-hidden animate-fade-up" style="animation-delay: {{ forloop.counter|add:'0'|stringformat:'0.1f' }}s;">
+                {% if project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.image_alt|default:project.title }}" class="w-full h-64 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-xl font-bold">{{ project.title }}</h3>
+                        {% if project.featured %}
+                        <span class="text-xs text-white px-2 py-1 rounded-full" style="background: var(--gradient);">Featured</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-secondary text-sm mb-3">{{ project.short_description|truncatewords:15 }}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for tech in project.tech_list|slice:":4" %}
+                        <span class="text-xs px-2 py-1 rounded-full" style="background: var(--bg-secondary); color: var(--text-secondary);">
+                            {{ tech }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="{% url 'project_detail' project.slug %}" class="btn-primary text-sm flex-1 text-center">
+                            View Details
+                        </a>
+                        {% if project.project_url %}
+                        <a href="{{ project.project_url }}" target="_blank" class="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm flex-1 text-center" style="border-color: var(--border-color); color: var(--text-primary);">
+                            <i class="fas fa-external-link-alt"></i> Live
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-12 text-secondary">
+                <i class="fas fa-folder-open text-6xl mb-4"></i>
+                <p class="text-xl">No projects found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

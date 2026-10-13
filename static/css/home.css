@@ -1,0 +1,244 @@
+.hero-section {
+    position: relative;
+    background: var(--bg-primary);
+    z-index: 1;
+}
+
+/* Profile Image specific overrides */
+.profile-image {
+    border-color: var(--primary);
+    border-width: 4px;
+}
+
+/* ===== ANIMATED BACKGROUND BLOBS (Hero-specific overrides) ===== */
+/* ===== ANIMATED BACKGROUND BLOBS ===== */
+.bg-blob {
+    filter: blur(100px);
+    opacity: 0.22;              /* Light theme – zyada visible */
+}
+
+[data-theme="dark"] .bg-blob {
+    opacity: 0.12;              /* Dark theme – original */
+}
+
+.blob-1 {
+    background: var(--primary);
+    animation-duration: 25s;
+}
+.blob-2 {
+    background: var(--primary-light);
+    animation-duration: 30s;
+    animation-delay: -5s;
+}
+.blob-3 {
+    background: var(--primary-dark);
+    animation-duration: 35s;
+    animation-delay: -10s;
+}
+
+/* ===== FLOATING SHAPES ===== */
+.floating-shape {
+    opacity: 0.12;              /* Light theme */
+}
+
+[data-theme="dark"] .floating-shape {
+    opacity: 0.06;              /* Dark theme – original */
+}
+
+.shape-1 {
+    background: var(--primary);
+    animation-duration: 22s;
+}
+.shape-2 {
+    background: var(--primary-light);
+    animation-duration: 18s;
+}
+.shape-3 {
+    background: var(--primary-dark);
+    animation-duration: 14s;
+    animation-delay: -3s;
+}
+
+
+/* ===== PROFILE RING (Light/Dark Adaptive) ===== */
+.profile-ring {
+    border: 4px dashed var(--primary);
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: border-color 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Light theme – subtle */
+.profile-ring {
+    box-shadow: 0 0 30px rgba(217, 119, 6, 0.1);
+}
+
+/* Dark theme – golden glow */
+[data-theme="dark"] .profile-ring {
+    opacity: 0.8;
+    border-color: var(--primary);
+    box-shadow: 0 0 50px rgba(251, 191, 36, 0.2),
+                inset 0 0 50px rgba(251, 191, 36, 0.05);
+}
+
+/* ===== RESPONSIVE TWEAKS ===== */
+@media (max-width: 640px) {
+    .hero-section .grid {
+        gap: 2rem;
+    }
+    .btn-primary {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    .floating-shape {
+        display: none; /* hide on small screens to reduce clutter */
+    }
+    .bg-blob {
+        filter: blur(60px);
+        opacity: 0.15;
+    }
+    [data-theme="dark"] .bg-blob {
+        opacity: 0.08;
+    }
+}
+
+
+/* =========================
+   SKILLS
+========================= */
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.skill-section {
+    padding: 22px;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background: var(--bg-secondary);
+    transition: all 0.3s ease;
+}
+
+.skill-section:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px var(--shadow-color);
+}
+
+
+/* Category heading */
+
+.skill-category-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.skill-category-title h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.skill-category-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+
+/* Skills */
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+/* Skill card */
+
+.skill-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 9px 13px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    background: var(--bg-primary);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.skill-card:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 5px 15px var(--shadow-color),
+        0 0 10px rgba(255, 220, 80, 0.12);
+}
+
+
+/* Icon */
+
+.skill-icon {
+    width: 25px;
+    height: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.skill-icon i {
+    line-height: 1;
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .skill-section {
+        padding: 18px;
+    }
+
+    .skill-category-title {
+        margin-bottom: 13px;
+    }
+
+    .skill-card {
+        padding: 8px 11px;
+        font-size: 13px;
+    }
+
+    .skill-icon {
+        width: 23px;
+        height: 23px;
+        font-size: 20px;
+    }
+}

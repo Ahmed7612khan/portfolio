@@ -1,0 +1,577 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load split_filter %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+{% block content %}
+
+<!-- ======== HERO ======== -->
+<section class="hero-section min-h-screen flex items-center relative overflow-hidden">
+    <!-- Animated Background Blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <!-- Floating Shapes (now background only) -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div class="space-y-6 reveal-left">
+                <div class="inline-block px-4 py-2 rounded-full text-primary font-semibold text-sm tracking-wide" style="background: var(--primary-light); opacity: 0.15;">
+                    <i class="fas fa-code mr-2"></i> Available for hire
+                </div>
+
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight">
+                    Hi, I'm <br>
+                    <span class="gradient-text typing-text" data-text="{{ about.name|default:'Developer' }}"></span>
+                </h1>
+
+                <p class="text-xl text-secondary">{{ about.title|default:'Full Stack Developer' }}</p>
+
+                <p class="text-secondary max-w-lg text-lg leading-relaxed">
+                    {{ about.bio|striptags|truncatewords:30 }}
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="#projects" class="btn-primary">
+                        <i class="fas fa-code mr-2"></i> View My Work
+                    </a>
+                    {% if about.resume_file %}
+                    <a href="{{ about.resume_file.url }}" download class="btn-primary btn-outline">
+                        <i class="fas fa-download mr-2"></i> Resume
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Stats with Count Animation -->
+                <div class="flex gap-8 pt-4 flex-wrap">
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold gradient-text"><span class="counter" data-target="{{ about.experience_years|default:'0' }}">0</span>+</div>
+                        <div class="text-secondary text-sm">Years Experience</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold gradient-text"><span class="counter" data-target="{{ about.projects_completed|default:'0' }}">0</span>+</div>
+                        <div class="text-secondary text-sm">Projects Done</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold gradient-text"><span class="counter" data-target="{{ about.happy_clients|default:'0' }}">0</span>+</div>
+                        <div class="text-secondary text-sm">Happy Clients</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Image -->
+            <div class="flex justify-center reveal-right">
+                <div class="relative">
+                    {% if about.profile_image %}
+                    <img src="{{ about.profile_image.url }}" alt="{{ about.name }}"
+                        class="profile-image rounded-full shadow-2xl border-4 border-primary
+                                hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                    <div class="w-64 h-64 md:w-80 md:h-80 rounded-full flex items-center justify-center text-6xl text-white shadow-2xl" style="background: var(--gradient);">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                    <!-- profile-ring now handles border & theme -->
+                    <div class="profile-ring absolute -inset-4 rounded-full animate-spin-slow"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======== SERVICES ======== -->
+<section class="section-bg py-16 md:py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12 reveal">
+            <h2 class="section-title">What I Do</h2>
+            <p class="section-subtitle">I provide high‑quality services that help businesses grow and succeed.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {% for service in services %}
+            <div class="card p-6 md:p-8 text-center reveal service-card" style="transition-delay: {{ forloop.counter|add:'0'|stringformat:'0.1f' }}s;">
+                <div class="text-5xl md:text-6xl gradient-text mb-4">
+                    <i class="fas {{ service.icon_class }}"></i>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold mb-3">{{ service.title }}</h3>
+                <p class="text-secondary text-sm md:text-base">{{ service.description }}</p>
+                <div class="card-glow"></div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center text-secondary">No services added yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ======== SKILLS ======== -->
+<section class="py-12 md:py-16">
+    <div class="container mx-auto px-4">
+
+        <div class="text-center mb-8 md:mb-10 reveal">
+            <h2 class="section-title">My Skills</h2>
+            <p class="section-subtitle">
+                Technologies and tools I use to build modern, scalable solutions.
+            </p>
+        </div>
+
+        {% load split_filter %}
+
+        {% with categories='backend,frontend,database,tools'|split:',' %}
+
+        <div class="skills-grid max-w-6xl mx-auto">
+
+            {% for category in categories %}
+
+                <div class="skill-section reveal">
+
+                    <div class="skill-category-title">
+                        <span class="skill-category-dot"></span>
+
+                        <h3> 
+                            {% if category == 'backend' %}
+                                Backend
+                            {% elif category == 'frontend' %}
+                                Frontend
+                            {% elif category == 'database' %}
+                                Database
+                            {% elif category == 'tools' %}
+                                Tools & Others
+                            {% else %}
+                                {{ category }}
+                            {% endif %}
+                        </h3>
+                    </div>
+
+                    <div class="skills-list">
+
+                        {% for skill in skills %}
+                            {% if skill.category == category %}
+
+                                <div class="skill-card">
+                                    <div class="skill-icon">
+                                        {% with skill_name=skill.name|lower %}
+
+                                            {% if skill_name == "javascript" %}
+                                                <i class="devicon-javascript-plain colored"></i>
+
+                                            {% elif skill_name == "python" %}
+                                                <i class="devicon-python-plain colored"></i>
+
+                                            {% elif skill_name == "django" %}
+                                                <i class="devicon-django-plain"></i>
+
+                                            {% elif skill_name == "react" %}
+                                                <i class="devicon-react-original colored"></i>
+
+                                            {% elif skill_name == "html" %}
+                                                <i class="devicon-html5-plain colored"></i>
+
+                                            {% elif skill_name == "css" %}
+                                                <i class="devicon-css3-plain colored"></i>
+
+                                            {% elif skill_name == "tailwind css" %}
+                                                <i class="devicon-tailwindcss-original colored"></i>
+
+                                            {% elif skill_name == "bootstrap" %}
+                                                <i class="devicon-bootstrap-plain colored"></i>
+
+                                            {% elif skill_name == "postgresql" %}
+                                                <i class="devicon-postgresql-plain colored"></i>
+
+                                            {% elif skill_name == "mysql" %}
+                                                <i class="devicon-mysql-plain colored"></i>
+
+                                            {% elif skill_name == "git" %}
+                                                <i class="devicon-git-plain colored"></i>
+
+                                            {% elif skill_name == "github" %}
+                                                <i class="devicon-github-original"></i>
+
+                                            {% elif skill_name == "docker" %}
+                                                <i class="devicon-docker-plain colored"></i>
+
+                                            {% else %}
+                                                <i class="fas fa-code"></i>
+                                            {% endif %}
+
+                                        {% endwith %}
+                                    </div>
+                                    <span>{{ skill.name }}</span>
+                                </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endwith %}
+
+    </div>
+</section>
+
+<!-- ======== FEATURED PROJECTS ======== -->
+<section class="section-bg py-16 md:py-20" id="projects">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12 reveal">
+            <h2 class="section-title">Featured Projects</h2>
+            <p class="section-subtitle">Some of my best work that showcases my skills and expertise.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {% for project in projects %}
+            <div class="card rounded-2xl overflow-hidden group reveal project-card" style="transition-delay: {{ forloop.counter|add:'0'|stringformat:'0.1f' }}s;">
+                {% if project.image %}
+                <div class="overflow-hidden">
+                    <img src="{{ project.image.url }}" alt="{{ project.image_alt|default:project.title }}"
+                         class="w-full h-56 md:h-64 object-fill transition-transform duration-700 group-hover:scale-110">
+                </div>
+                {% endif %}
+                <div class="p-5 md:p-6">
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">{{ project.title }}</h3>
+                    <p class="text-secondary text-sm mb-4">{{ project.short_description|truncatewords:15 }}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for tech in project.tech_list|slice:":4" %}
+                        <span class="text-xs px-3 py-1 rounded-full font-medium" style="background: var(--primary); color: #000;">
+                            {{ tech }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'project_detail' project.slug %}" class="inline-flex items-center font-semibold hover:gap-3 transition-all" style="color: var(--primary);">
+                        View Project <i class="fas fa-arrow-right ml-2 transition-all group-hover:ml-3"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center text-secondary">No projects added yet.</div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-10 reveal">
+            <a href="{% url 'projects' %}" class="btn-primary">
+                View All Projects <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ======== TESTIMONIALS ======== -->
+{% if testimonials %}
+<section class="py-16 md:py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12 reveal">
+            <h2 class="section-title">Testimonials</h2>
+            <p class="section-subtitle">What people say about my work.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {% for testimonial in testimonials %}
+            <div class="card p-5 md:p-6 reveal testimonial-card" style="transition-delay: {{ forloop.counter|add:'0'|stringformat:'0.1f' }}s;">
+                <div class="flex items-center gap-4 mb-4">
+                    {% if testimonial.image %}
+                        <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" class="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover testimonial-image" style="border: 2px solid var(--primary);">
+                    {% else %}
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white text-xl font-bold testimonial-image" style="background: var(--gradient);">
+                        {{ testimonial.name|first }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <h4 class="font-semibold text-base md:text-lg">{{ testimonial.name }}</h4>
+                        <p class="text-sm text-secondary">{{ testimonial.position }}{% if testimonial.company %} at {{ testimonial.company }}{% endif %}</p>
+                    </div>
+                </div>
+                <p class="text-secondary text-sm md:text-base mb-4 italic">"{{ testimonial.content }}"</p>
+                <div class="flex text-yellow-400 text-sm">
+                    {% for i in "12345" %}
+                    <i class="fas fa-star {% if forloop.counter <= testimonial.rating %}text-yellow-400{% else %}text-gray-300{% endif %}"></i>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+<!-- ======== CONTACT ======== -->
+<section class="section-bg py-16 md:py-20" id="contact">
+    <div class="container mx-auto px-4">
+
+        <div class="text-center mb-12 reveal">
+            <h2 class="section-title">Get In Touch</h2>
+            <p class="section-subtitle">
+                Have a project in mind? Let's work together.
+            </p>
+        </div>
+
+        <div class="max-w-2xl mx-auto card p-6 md:p-8 reveal">
+            <form id="contact-form"
+                  method="POST"
+                  action="{% url 'contact_submit' %}"
+                  class="space-y-6">
+
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                        <label for="name"
+                               class="block text-sm font-medium mb-2">
+                            Your Name
+                        </label>
+                        <input type="text"
+                               id="name"
+                               name="name"
+                               maxlength="150"
+                               autocomplete="name"
+                               required
+                               class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition"
+                               style="border-color:var(--border-color);background:var(--bg-card);color:var(--text-primary);--tw-ring-color:var(--primary);">
+                    </div>
+
+                    <div>
+                        <label for="email"
+                               class="block text-sm font-medium mb-2">
+                            Email Address
+                        </label>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               maxlength="254"
+                               autocomplete="email"
+                               required
+                               class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition"
+                               style="border-color:var(--border-color);background:var(--bg-card);color:var(--text-primary);--tw-ring-color:var(--primary);">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="subject"
+                           class="block text-sm font-medium mb-2">
+                        Subject
+                    </label>
+                    <input type="text"
+                           id="subject"
+                           name="subject"
+                           maxlength="250"
+                           required
+                           class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition"
+                           style="border-color:var(--border-color);background:var(--bg-card);color:var(--text-primary);--tw-ring-color:var(--primary);">
+                </div>
+
+                <div>
+                    <label for="message"
+                           class="block text-sm font-medium mb-2">
+                        Message
+                    </label>
+                    <textarea id="message"
+                              name="message"
+                              rows="5"
+                              maxlength="10000"
+                              required
+                              class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition"
+                              style="border-color:var(--border-color);background:var(--bg-card);color:var(--text-primary);--tw-ring-color:var(--primary);"></textarea>
+                </div>
+
+                <button type="submit"
+                        id="contact-submit-btn"
+                        class="btn-primary w-full justify-center">
+                    Send Message
+                    <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+
+                <p id="contact-status"
+                   class="text-sm text-center"
+                   role="status"
+                   aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // ---- TYPING EFFECT ----
+        const typingElement = document.querySelector('.typing-text');
+        if (typingElement) {
+            const text = typingElement.getAttribute('data-text') || 'Developer';
+            let index = 0;
+            typingElement.textContent = '';
+            function type() {
+                if (index < text.length) {
+                    typingElement.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(type, 100);
+                }
+            }
+            type();
+        }
+
+        // ---- COUNTER ANIMATION (SCROLL TRIGGER) ----
+        const counters = document.querySelectorAll('.counter');
+        let countersStarted = false;
+
+        function startCounters() {
+            if (countersStarted) return;
+            countersStarted = true;
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target')) || 0;
+                let current = 0;
+                const increment = Math.ceil(target / 60);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = current;
+                    }
+                }, 30);
+            });
+        }
+
+        // ---- SKILL BARS ANIMATION (SCROLL TRIGGER) ----
+        const skillBars = document.querySelectorAll('.skill-bar');
+        let skillAnimated = false;
+
+        function animateSkillBars() {
+            if (skillAnimated) return;
+            skillAnimated = true;
+            skillBars.forEach(bar => {
+                const width = bar.getAttribute('data-width');
+                setTimeout(() => {
+                    bar.style.width = width + '%';
+                }, 300);
+            });
+        }
+
+        // ---- INTERSECTION OBSERVER FOR SCROLL TRIGGERS ----
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Start counters if the stats section is visible
+                    if (entry.target.closest('.hero-section') || entry.target.classList.contains('counter')) {
+                        startCounters();
+                    }
+                    // Start skill bars if skills section is visible
+                    if (entry.target.closest('.skill-section') || entry.target.classList.contains('skill-bar')) {
+                        animateSkillBars();
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
+
+        // Observe counters and skill bars
+        counters.forEach(c => observer.observe(c));
+        skillBars.forEach(b => observer.observe(b));
+
+    });
+    
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('contact-form');
+
+    if (!form) return;
+
+    const btn = document.getElementById('contact-submit-btn');
+    const status = document.getElementById('contact-status');
+    const originalText = btn.innerHTML;
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        if (!form.reportValidity()) return;
+
+        if (btn.disabled) return;
+
+        btn.disabled = true;
+        btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+
+        status.textContent = '';
+
+        Swal.fire({
+            title: 'Sending your message',
+            text: 'Please wait while we submit your message.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || 'Unable to send your message.'
+                );
+            }
+
+            // Success popup
+            await Swal.fire({
+                icon: 'success',
+                title: 'Message Sent!',
+                text: data.message,
+                confirmButtonText: 'Great!',
+                confirmButtonColor: '#d4a017',
+                customClass: {
+                    popup: 'contact-swal-popup'
+                }
+            });
+
+            form.reset();
+            status.textContent = 'Your message was sent successfully.';
+
+        } catch (error) {
+            // Error popup
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops! Something went wrong',
+                text: error.message ||
+                    'Please try again later.',
+                confirmButtonText: 'Try Again',
+                confirmButtonColor: '#d4a017'
+            });
+
+            status.textContent = error.message ||
+                'Message could not be sent.';
+
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    });
+});
+</script>
+
+
+
+{% endblock %}

@@ -1,0 +1,97 @@
+<!-- templates/blog/blog_detail.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="card p-6 rounded-2xl sticky top-24">
+                    <h4 class="font-bold mb-4">Categories</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="{% url 'blog:blog_list' %}" class="transition block py-1 hover-primary" style="color: var(--text-secondary);">
+                                All Posts
+                            </a>
+                        </li>
+                        {% for category in categories %}
+                        <li>
+                            <a href="{% url 'blog:blog_list' %}?category={{ category.slug }}" class="transition block py-1 hover-primary" style="color: var(--text-secondary);">
+                                {{ category.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Blog Post -->
+            <div class="lg:col-span-3">
+                <div class="max-w-3xl">
+                    <a href="{% url 'blog:blog_list' %}" class="text-secondary hover:text-primary transition mb-4 inline-block">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Blog
+                    </a>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center gap-2 text-sm text-secondary mb-2">
+                            <span>{{ post.published_date|date:"M d, Y" }}</span>
+                            {% if post.category %}
+                            <span>•</span>
+                            <span class="hover-primary" style="color: var(--primary);">{{ post.category.name }}</span>
+                            {% endif %}
+                            <span>•</span>
+                            <span>By {{ post.author }}</span>
+                        </div>
+                        <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
+                        {% if post.tags %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for tag in post.tag_list %}
+                            <span class="text-xs px-2 py-1 rounded-full" style="background: var(--bg-secondary); color: var(--text-secondary);">
+                                #{{ tag }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if post.featured_image %}
+                    <div class="rounded-2xl overflow-hidden mb-8">
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="prose max-w-none" style="color: var(--text-primary);">
+                        {{ post.content|safe }}
+                    </div>
+                    
+                    <!-- Related Posts -->
+                    {% if related_posts %}
+                    <div class="mt-12 pt-8 border-t" style="border-color: var(--border-color);">
+                        <h3 class="text-2xl font-bold mb-6">Related Posts</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {% for related in related_posts %}
+                            <div class="card rounded-xl overflow-hidden">
+                                {% if related.featured_image %}
+                                <img src="{{ related.featured_image.url }}" alt="{{ related.title }}" class="w-full h-32 object-cover">
+                                {% endif %}
+                                <div class="p-4">
+                                    <h4 class="font-semibold text-sm">
+                                        <a href="{% url 'blog:blog_detail' related.slug %}" class="transition hover-primary" style="color: var(--text-primary);">
+                                            {{ related.title }}
+                                        </a>
+                                    </h4>
+                                    <p class="text-xs text-secondary mt-1">{{ related.published_date|date:"M d, Y" }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

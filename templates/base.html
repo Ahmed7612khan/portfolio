@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ current_theme|default:'light' }}">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_settings.site_name|default:'Portfolio' }}{% endblock %}</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="{{ site_settings.meta_description|default:'Professional Portfolio' }}">
+    <meta name="keywords" content="{{ site_settings.meta_keywords|default:'portfolio, developer, full stack' }}">
+    
+    <!-- Favicon -->
+    {% if site_settings.favicon %}
+    <link rel="icon" href="{{ site_settings.favicon.url }}" type="image/x-icon">
+    {% endif %}
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        DEFAULT: 'var(--primary)',
+                        light: 'var(--primary-light)',
+                        dark: 'var(--primary-dark)',
+                    },
+                },
+                animation: {
+                    'spin-slow': 'spin-slow 20s linear infinite',
+                },
+                keyframes: {
+                    'spin-slow': {
+                        '0%': {
+                            transform: 'rotate(0deg)',
+                        },
+                        '100%': {
+                            transform: 'rotate(360deg)',
+                        },
+                    }
+                }
+            }
+        }
+    }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button onclick="toggleTheme()" class="theme-toggle fixed top-4 right-4 z-50 shadow-lg">
+        <i class="fas fa-moon text-xl dark:hidden"></i>
+        <i class="fas fa-sun text-xl hidden dark:block"></i>
+    </button>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-40 bg-opacity-80 backdrop-blur-lg" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'home' %}" class="text-2xl font-bold gradient-text">
+                    {{ site_settings.site_name|default:'Portfolio' }}
+                </a>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="{% url 'home' %}" class="nav-link {% if section == 'home' %}active{% endif %}">Home</a>
+                    <a href="{% url 'projects' %}" class="nav-link {% if section == 'projects' %}active{% endif %}">Projects</a>
+                    <a href="{% url 'blog:blog_list' %}" class="nav-link {% if section == 'blog' %}active{% endif %}">Blog</a>
+                    <a href="/#contact" class="nav-link">Contact</a>
+                </div>
+                
+                <button id="mobile-menu-btn" class="md:hidden text-2xl" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-4 pb-2">
+                <a href="{% url 'home' %}" class="block nav-link {% if section == 'home' %}active{% endif %}">Home</a>
+                <a href="{% url 'projects' %}" class="block nav-link {% if section == 'projects' %}active{% endif %}">Projects</a>
+                <a href="{% url 'blog:blog_list' %}" class="block nav-link {% if section == 'blog' %}active{% endif %}">Blog</a>
+                <a href="#contact" class="block nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="pt-[4rem]">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="section-bg py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">{{ site_settings.site_name|default:'Portfolio' }}</h3>
+                    <p class="text-secondary">{{ site_settings.site_description|default:'Full Stack Developer' }}</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-secondary">
+                        <li><a href="{% url 'home' %}" class="transition hover-primary">Home</a></li>
+                        <li><a href="{% url 'projects' %}" class="transition hover-primary">Projects</a></li>
+                        <li><a href="{% url 'blog:blog_list' %}" class="transition hover-primary">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-secondary">
+                        {% if site_settings.email %}
+                        <li><i class="fas fa-envelope mr-2"></i> {{ site_settings.email }}</li>
+                        {% endif %}
+                        {% if site_settings.phone %}
+                        <li><i class="fas fa-phone mr-2"></i> {{ site_settings.phone }}</li>
+                        {% endif %}
+                        {% if site_settings.address %}
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> {{ site_settings.address }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Follow Me</h4>
+                    <div class="flex space-x-4">
+                        {% if site_settings.github %}
+                        <a href="{{ site_settings.github }}" target="_blank" class="text-2xl transition transform hover:scale-110 hover-primary">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        {% endif %}
+                        {% if site_settings.linkedin %}
+                        <a href="{{ site_settings.linkedin }}" target="_blank" class="text-2xl transition transform hover:scale-110 hover-primary">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        {% endif %}
+                        {% if site_settings.twitter %}
+                        <a href="{{ site_settings.twitter }}" target="_blank" class="text-2xl transition transform hover:scale-110 hover-primary">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        {% endif %}
+                        {% if site_settings.instagram %}
+                        <a href="{{ site_settings.instagram }}" target="_blank" class="text-2xl transition transform hover:scale-110 hover-primary">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        {% endif %}
+                        {% if site_settings.youtube %}
+                        <a href="{{ site_settings.youtube }}" target="_blank" class="text-2xl transition transform hover:scale-110 hover-primary">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 dark:border-gray-700 mt-12 pt-8 text-center text-secondary">
+                <p>&copy; {% now "Y" %} {{ site_settings.site_name|default:'Portfolio' }}. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="{% static "js/base.js" %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
